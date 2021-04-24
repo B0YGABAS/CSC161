@@ -1,0 +1,11 @@
+{% extends 'mainbar.html' %}
+{% block body %}
+<form method="post" action="transferrequest">
+    <label>Enter Amount</label>
+    <input type="number" name="amount" min=0 value=0>
+    <label>Enter Recipient's name</label>
+    <input type="text" name="recipient">
+    <button type="submit">Transfer</button>
+</form>
+
+{% endblock %}

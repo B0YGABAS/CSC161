@@ -88,7 +88,7 @@ def User_Profile_lockon(account):
             return i
     return False
 
-CREATE('user',(None,'Isaiah Andre Pabillon','WHATDASHIT',0,5))
+#CREATE('user',(None,'Isaiah Andre Pabillon','WHATDASHIT',0,'Client'))
     
 '''
 #CREATE("item","wa")

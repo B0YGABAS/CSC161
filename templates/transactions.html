@@ -1,0 +1,54 @@
+{% extends 'mainbar.html' %}
+{% block body %}
+<table>
+    <tr>
+        {%for i in tablehead%}
+        <th>{{i}}</th>
+        {%endfor%}
+        {% if Clearance[2]==1 and tablehead[0]!='ID' and tablehead[0]!='Type' %}
+        <th>Action</th>
+        {% elif tablehead[0]=='ID' %}
+        {% if Clearance[4]==1 %}
+        <th>Modify Clearance</th>
+        {% endif %}
+        {% if Clearance[5]==1 %}
+        <th>Modify Password</th>
+        {% endif %}
+        {% endif %}
+    </tr>
+    {%for i in transaction%}
+    <tr>
+        {%for j in i%}
+        <td>{{j}}</td>
+        {%endfor%}
+        {% if Clearance[2]==1 and tablehead[0]=='deposits_or_withdrawalsID' %}
+        {% if i[4]==0 %}
+        <td><form method="post" action="{{url_for('setstatus')}}"><input type="text" name="type" value="{{tablehead[0]}}"><input type="text" name="status" value="{{i[0]}}"><button type="submit">Verify</button></form></td>
+        {% endif %}
+        {% elif Clearance[2]==1 and tablehead[0]=='TransactionID' %}
+        {% if i[3]==0 %}
+        <td><form method="post" action="{{url_for('setstatus')}}"><input type="text" name="type" value="{{tablehead[0]}}"><input type="text" name="status" value="{{i[0]}}"><button type="submit">Verify</button></form></td>
+        {% endif %}
+        {% elif tablehead[0]=='ID' and i[4]!='SuperAdmin' %}
+        <form method="post" action="{{url_for('modifyaccount')}}">
+        <td><input type="hidden" name='userid' value="{{i[0]}}"></td>
+        {% if Clearance[4]==1 %}
+        <td><select name="clearance">
+            <option value="unchange">Unchanged</option>
+            {% for k in clearances %}
+            {% if k!='Superadmin' %}
+            <option value="{{k}}">{{k}}</option>
+            {% endif %}
+            {% endfor %}
+          </select></td>
+        {% endif %}
+        {% if Clearance[5]==1 %}
+        <td><input type="text" name="passchange" value="{{i[2]}}"></td>
+        {% endif %}
+        <td><button type="submit">Modify</button></td>
+        </form>
+        {% endif %}
+    </tr>
+    {%endfor%}
+</table>
+{% endblock %}

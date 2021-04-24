@@ -1,0 +1,29 @@
+{% extends 'mainbar.html' %}
+{% block body %}
+<script>
+    function depositfunction(){
+        document.getElementById("depositamount").value=document.getElementById("amount").value;
+        document.getElementById("deposit").submit();
+    }
+    function withdrawfunction(){
+        document.getElementById("withdrawamount").value=document.getElementById("amount").value;
+        document.getElementById("withdraw").submit();
+    }
+</script>
+<form id="deposit" method="post" action="depositwithdraw">
+    <input type="hidden" id="depositamount" name="depositamount">
+    <input type="hidden" name="mode" value="deposit">
+</form>
+<form id="withdraw" method="post" action="depositwithdraw">
+    <input type="hidden" id="withdrawamount" name="withdrawamount">
+    <input type="hidden" name="mode" value="withdraw">
+</form>
+    {% if Clearance[2]==0 %}
+    <label>Enter Amount</label>
+    <input type="number" id="amount" min=0 value=0>
+    <button onclick="depositfunction()">deposit</button>
+    <button onclick="withdrawfunction()">withdraw</button>
+    {% endif %}
+
+
+{% endblock %}
