@@ -1,11 +1,11 @@
 from flask import Flask,render_template,redirect,session,url_for,request
-from flask_ngrok import run_with_ngrok
+#from flask_ngrok import run_with_ngrok
 import Database_Manager
 import datetime
 
 app = Flask(__name__, instance_relative_config=True)
 app.secret_key="secret"
-run_with_ngrok(app)
+#run_with_ngrok(app)
 
 @app.route('/')
 @app.route('/login')
@@ -188,7 +188,8 @@ def transactions(a):
         deposits=Database_Manager.SEARCH("deposits or withdrawals")
     '''
     return render_template('transactions.html',user=session["user"],Clearance=Database_Manager.SEARCH("Clearance",session["user"][0][4])[0],transaction=newesttran,tablehead=tablehead,clearances=newclear)
-
+'''
 if __name__ == "__main__":
     #app.run(host='localhost',debug=True)
     app.run()
+'''
