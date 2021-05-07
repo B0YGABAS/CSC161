@@ -1,6 +1,6 @@
 from flask import Flask,render_template,redirect,session,url_for,request
 #from flask_ngrok import run_with_ngrok
-#import Database_Manager
+import Database_Manager
 import datetime
 
 app = Flask(__name__, instance_relative_config=True)
