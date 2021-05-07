@@ -1,13 +1,18 @@
 from flask import Flask,render_template,redirect,session,url_for,request
+from flask_ngrok import run_with_ngrok
 import Database_Manager
 import datetime
 
 app = Flask(__name__, instance_relative_config=True)
 app.secret_key="secret"
+run_with_ngrok(app)
 
 @app.route('/')
 @app.route('/login')
 def login():
+    print(request.access_route)
+    print("++")
+    print(request.remote_addr)
     if "user" in session:
         return redirect(url_for('home'))
     return render_template('login.html')
@@ -29,7 +34,7 @@ def loginpass():
 def home():
     if "user" not in session:
         return redirect(url_for('login'))
-    print(session["Clearance"])
+    #print(session["Clearance"])
     message=""
     if "message" in session:
         message=session["message"]
@@ -76,9 +81,9 @@ def modifyaccount():
 def depositwithdraw():
     if "user" not in session:
         return redirect(url_for('login'))
-    print(request.form.get("depositamount"))
+    #print(request.form.get("depositamount"))
     if request.form.get("mode")=="deposit":
-        print(datetime.datetime.now())
+        #print(datetime.datetime.now())
         Database_Manager.CREATE("deposits_or_withdrawals",(None,int(request.form.get("depositamount")),0,datetime.datetime.now(),False,session["user"][0][0],None))
         session["message"]="You have requested to deposit Php"+str(int(request.form.get("depositamount")))+". Your teller will update your balance once he/she receives your cash"
         return redirect(url_for('home'))
@@ -185,4 +190,5 @@ def transactions(a):
     return render_template('transactions.html',user=session["user"],Clearance=Database_Manager.SEARCH("Clearance",session["user"][0][4])[0],transaction=newesttran,tablehead=tablehead,clearances=newclear)
 
 if __name__ == "__main__":
-    app.run(host='localhost',debug=True)
+    #app.run(host='localhost',debug=True)
+    app.run()

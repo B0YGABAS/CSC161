@@ -1,7 +1,7 @@
 import mysql.connector
 import datetime
 
-DATABASE=mysql.connector.connect(host="localhost",user="root",password="Python2.0",db ="bank")
+DATABASE=mysql.connector.connect(host="localhost",user="root",password="Python2.0",db ="onlinebank")
 
 DATA=DATABASE.cursor()
 
@@ -18,7 +18,7 @@ def CREATE(table,tuples):
         if i!=DATAFIELDS[-1]:
             DATAFIELDSTRING=DATAFIELDSTRING+","
     DATAFIELDSTRING=DATAFIELDSTRING+")"
-    print(DATAFIELDSTRING)
+    #print(DATAFIELDSTRING)
     DATA.execute(DATAFIELDSTRING,tuples)
     DATABASE.commit()
 
@@ -74,7 +74,7 @@ def UPDATE(table,tuples):
 def DELETE(table,id,index=0):
     DATAFIELDS=READFIELDS(table)
     DATAFIELDSTRING="delete from "+table+" where ("+DATAFIELDS[index]+"="+id+")"
-    print(DATAFIELDSTRING)
+    #print(DATAFIELDSTRING)
     DATA.execute(DATAFIELDSTRING)
     DATABASE.commit()
 
