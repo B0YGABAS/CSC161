@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<head>
+    <script>
+        function storage(){
+            localStorage.setItem("machine", document.getElementById("machineid").value);
+            window.location.reload();
+        }
+        function lod(){
+            document.getElementById("idmachine").innerHTML=localStorage.getItem("machine");
+        }
+        function dilit(){
+            localStorage.removeItem("machine");
+            window.location.reload();
+        }
+    </script>
+</head>
+<body onload="lod()">
+    <label id="idmachine">Your machine is:</label>
+    <input type="text" id="machineid">
+    <button onclick="storage()">submit</button>
+    <button onclick="dilit()">delete</button>
+</body>
+</html>
