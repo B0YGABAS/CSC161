@@ -18,9 +18,12 @@ def CREATE(table,tuples):
         if i!=DATAFIELDS[-1]:
             DATAFIELDSTRING=DATAFIELDSTRING+","
     DATAFIELDSTRING=DATAFIELDSTRING+")"
+    #print(tuples)
     #print(DATAFIELDSTRING)
     DATA.execute(DATAFIELDSTRING,tuples)
     DATABASE.commit()
+    DATA.execute('SELECT LAST_INSERT_ID();')
+    return DATA.fetchone()
 
 def SEARCH(table,search="",foreignindex=0,tupletostring=0, orderby=0):
     DATAFIELDS=READFIELDS(table)
@@ -43,7 +46,7 @@ def SEARCH(table,search="",foreignindex=0,tupletostring=0, orderby=0):
         
 def READFIELDS(table=()):
     table="\'"+table+"\'"
-    DATAFIELDSTRING="SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE table_schema = 'bank' and TABLE_NAME ="+table+" order by ORDINAL_POSITION"
+    DATAFIELDSTRING="SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE table_schema = 'onlinebank' and TABLE_NAME ="+table+" order by ORDINAL_POSITION"
     DATA.execute(DATAFIELDSTRING)
     DATAFIELDFETCH=DATA.fetchall()
     DATAFIELDS=[]

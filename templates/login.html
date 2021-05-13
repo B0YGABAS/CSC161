@@ -1,9 +1,22 @@
 <!DOCTYPE html>
+<head>
+    <script>
+        function storage(){
+            localStorage.setItem("machine", "2");
+        }
+        function lod(){
+            document.getElementById("machineid").value=localStorage.getItem("machine");
+        }
+    </script>
+</head>
+<body onload="lod()">
 <form action="loginpass" method="post">
 <label>username:</label>
 <input type="text" name="username"><br>
 <label>password:</label>
 <input type="text" name="password"><br>
+<input type="hidden" id="machineid" name="machineid">
 <input type="submit" value="Log in">
 </form>
+</body>
 </html>

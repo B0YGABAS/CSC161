@@ -4,7 +4,7 @@
 <span style="float: left;">Signed in as: {{user[0][1]}}</span><input type="submit" value="Log out" style="float: right;padding-bottom:0 ;">
 </form>
 <br>ID#: {{user[0][0]}}<br>Your current balance is: Php {{user[0][3]}}<span style="float: right;position: relative;"><a href="{{url_for('home')}}"><button>{%if Clearance[2]==0%}Deposit/Withdraw{%else%}Main menu{%endif%}</button></a></span><p></p>
-<p style="text-align: center;">{%if Clearance[4]==1 or Clearance[5]==1%}<a href="{{url_for('transactions',a='user')}}"><button>Manage Clearance</button></p></a>{%else%}<a href="{{url_for('transfer')}}"><button>Transfer funds</button></p></a>{%endif%}
+<p style="text-align: center;">{%if Clearance[3]==1%}<a href="{{url_for('transactions',a='user')}}"><button>Manage Clearance</button></p></a>{%else%}<a href="{{url_for('transfer')}}"><button>Transfer funds</button></p></a>{%endif%}
 <p style="text-align: center;"><a href="{{url_for('transactions',a='logs')}}"><button>Logs</button></a><a href="{{url_for('transactions',a='transfers')}}"><button>Transfers</button></a><a href="{{url_for('transactions',a='deposits_or_withdrawals')}}"><button>Deposits or Withdrawals</button></a></p>
 </div>
 <div style="background-color: black;color: white;">{{message}}</div>

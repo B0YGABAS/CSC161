@@ -49,6 +49,7 @@ def p():
     #return "\n".join(i for i in request.headers.getlist("X-Forwarded-For"))
 
 if __name__ == "__main__":
+    app.run(host="localhost")
     #app.run()
     #app.run(host="192.168.18.241")
-    app.run(host="0.0.0.0",port=8080,debug=True)
+    #app.run(host="0.0.0.0",port=8080,debug=True)
