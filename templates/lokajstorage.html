@@ -1,13 +1,14 @@
 <!DOCTYPE html>
         <head>
             <script>
-                function localmachine(lokaj){
+                function localmachine(lokaj,kolja){
                     localStorage.setItem('machine', lokaj);
+                    localStorage.setItem('pass', kolja);
                     document.getElementById("redirects").submit();
                 }
             </script>
         </head>
-        <body onload="localmachine({{lokaj[0]}})">
+        <body onload="localmachine('{{lokaj[0]}}','{{lokaj[3]}}')">
             <form id="redirects" method="post" action="{{url_for('redirect_to_home')}}"></form>
         </body>
     <html>

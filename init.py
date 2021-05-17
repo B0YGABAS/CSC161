@@ -3,19 +3,31 @@ from flask import Flask,render_template,redirect,session,url_for,request
 import Database_Manager
 import datetime
 import random
+import PHD_PASSWORD_GENERATOR
 
 app = Flask(__name__, instance_relative_config=True)
 app.secret_key="secret"
 #run_with_ngrok(app)
 
+def gen():
+    #print(session["machine"][3])
+    #print(Database_Manager.SEARCH("machine",session["machine"][0])[0][3])
+    if session["machine"][0]!=1 and session["machine"][3]==Database_Manager.SEARCH("machine",session["machine"][0])[0][3]:
+        PHD=PHD_PASSWORD_GENERATOR.gen(44)
+        Database_Manager.UPDATE("machine", (session["machine"][0],session["machine"][1],session["machine"][2],PHD))
+        session["machine"]=Database_Manager.SEARCH("machine",session["machine"][0])[0] #OPTIONAL NI NA LINE
+        return PHD
+    else:
+        return 1
+
 @app.route('/')
 @app.route('/login')
 def login():
-    print(request.access_route)
-    print("++")
-    print(request.remote_addr)
-    session.pop("user",None)
-    session.pop("machine",None)
+    #print(request.access_route)
+    #print("++")
+    #print(request.remote_addr)
+    #session.pop("user",None)
+    #session.pop("machine",None)
     if "user" in session:
         return redirect(url_for('home'))
     return render_template('login.html')
@@ -30,13 +42,18 @@ def loginpass():
                 machine="1"
             machine=Database_Manager.SEARCH("machine",machine)[0]
             session["machine"]=machine
-            #print(machine)
-            if session["user"][0][4]!="Teller" or machine[0]!=1:
+            if (session["user"][0][4]!="Teller" or machine[0]!=1) and session["machine"][3]==request.form.get('machinepass'): #Successful login
                 Database_Manager.CREATE("logs",('IN',datetime.datetime.now(),session["user"][0][0],int(machine[0])))
                 return redirect(url_for('home'))
                 return "hi  "+session["user"][0][1]
             session.pop("user",None)
             session.pop("machine",None)
+            if machine[3]!=request.form.get('machinepass'):
+                return "WARNING! the machine is compromised"
+            else:
+                return "Unauthorized Device"
+        else:
+            return "Wrong Password"
     return "PAKYO"
 
 @app.route('/home')
@@ -47,7 +64,7 @@ def home():
     if "message" in session:
         message=session["message"]
         session.pop("message",None)
-    return render_template('home.html',user=session["user"],Clearance=Database_Manager.SEARCH("Clearance",session["user"][0][4])[0],message=message,machine=session["machine"])
+    return render_template('home.html',user=session["user"],Clearance=Database_Manager.SEARCH("Clearance",session["user"][0][4])[0],PHD=gen(),message=message,machine=session["machine"])
 
 @app.route('/transfer')
 def transfer():
@@ -58,7 +75,7 @@ def transfer():
         message=session["message"]
         session.pop("message",None)
     #print(message)
-    return render_template('Transfer.html',user=session["user"],Clearance=Database_Manager.SEARCH("Clearance",session["user"][0][4])[0],message=message)
+    return render_template('Transfer.html',user=session["user"],Clearance=Database_Manager.SEARCH("Clearance",session["user"][0][4])[0],PHD=gen(),message=message)
 
 @app.route('/transferrequest', methods=["POST"])
 def transferrequest():
@@ -110,7 +127,7 @@ def logout():
     session.pop("machine",None)
     return redirect(url_for('login'))
 
-@app.route('/transactions/<a>')
+@app.route('/transactions/<a>') #WARSHAK KAAU
 def transactions(a):
     if "user" not in session:
         return redirect(url_for('login'))
@@ -137,14 +154,14 @@ def transactions(a):
     newclear=[]
     for i in clearances:
         newclear.append(i[0])
-    return render_template('transactions.html',user=session["user"],Clearance=Database_Manager.SEARCH("Clearance",session["user"][0][4])[0],transaction=newesttran,tablehead=tablehead,clearances=newclear)
+    return render_template('transactions.html',user=session["user"],Clearance=Database_Manager.SEARCH("Clearance",session["user"][0][4])[0],PHD=gen(),transaction=newesttran,tablehead=tablehead,clearances=newclear)
 
 @app.route('/registermachine', methods=["POST"])
 def registermachine():
     #lokajmachine=Database_Manager.CREATE("machine", (None,request.form.get("branchname"),request.form.get("pcnumber"),random.randint(0,999999)))
     #session["machine"]=Database_Manager.CREATE("machine", (None,request.form.get("branchname"),request.form.get("pcnumber"),random.randint(0,999999)))[0]
-    session["machine"]=Database_Manager.SEARCH("machine", Database_Manager.CREATE("machine", (None,request.form.get("branchname"),request.form.get("pcnumber"),random.randint(0,999999)))[0])[0]
-    print(session["machine"])
+    session["machine"]=Database_Manager.SEARCH("machine", Database_Manager.CREATE("machine", (None,request.form.get("branchname"),request.form.get("pcnumber"),PHD_PASSWORD_GENERATOR.gen(44)))[0])[0]
+    #print(session["machine"])
     return render_template('lokajstorage.html',lokaj=session["machine"])
 
 @app.route('/redirect_to_home', methods=["POST"])

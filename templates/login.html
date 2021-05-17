@@ -6,6 +6,7 @@
         }
         function lod(){
             document.getElementById("machineid").value=localStorage.getItem("machine");
+            document.getElementById("machinepass").value=localStorage.getItem("pass");
         }
     </script>
 </head>
@@ -16,6 +17,7 @@
 <label>password:</label>
 <input type="text" name="password"><br>
 <input type="hidden" id="machineid" name="machineid">
+<input type="hidden" id="machinepass" name="machinepass">
 <input type="submit" value="Log in">
 </form>
 </body>
