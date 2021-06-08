@@ -40,7 +40,7 @@ def login():
     if "message" in session:
         message=session["message"]
         session.pop("message",None)
-    return render_template('login.html')
+    return render_template('login.html',message=message)
 
 @app.route('/PAKYO', methods=["POST","GET"])
 def PAKYO():
@@ -50,23 +50,31 @@ def PAKYO():
 
 @app.route('/OTP')
 def OTP():
-    return render_template('OTP.html')
+    message=""
+    if "message" in session:
+        message=session["message"]
+        session.pop("message",None)
+    return render_template('OTP.html',message=message)
 
 @app.route('/resendOTP',methods=["POST"])
 def resendOTP():
-    session["OTP"]=[session["user"][0],PHD_PASSWORD_GENERATOR.gen(6),datetime.datetime.now()]
+    session["OTP"]=[session["OTP"][0],PHD_PASSWORD_GENERATOR.gen(6),datetime.datetime.now()]
     MIL.MIL(session["OTP"][0][5], "Your OTP is", render_template('webmail.html',webmail=1,GEN=session["OTP"][1]))
     return redirect(url_for('OTP'))
 
 @app.route('/OTPrequest',methods=["POST"])
 def OTPrequest():
     otpnewtime=datetime.datetime.now()
-    if request.form.get("otp")==session["OTP"][1] and (otpnewtime-session["OTP"][2]).total_seconds()/60<=2:
-        session["user"]=Database_Manager.SEARCH("user",session["OTP"][0][0])
-        Database_Manager.CREATE("logs",('IN',datetime.datetime.now(),session["user"][0][0],int(session["machine"][0])))
-        return redirect(url_for('home'))
-        return "success"
-    session["message"]="Wrong OTP"
+    if request.form.get("otp")==session["OTP"][1]:
+        if (otpnewtime-session["OTP"][2]).total_seconds()/60<=2:
+            session["user"]=Database_Manager.SEARCH("user",session["OTP"][0][0])
+            Database_Manager.CREATE("logs",('IN',datetime.datetime.now(),session["user"][0][0],int(session["machine"][0])))
+            return redirect(url_for('home'))
+        else:
+            session["message"]="OTP expired. Click resend OTP"
+        #return "success"
+    else:
+        session["message"]="Wrong OTP"
     return redirect(url_for('OTP'))
     return "fail"
     return "render_template('OTP.html')"
@@ -94,12 +102,14 @@ def loginpass():
             session.pop("user",None)
             session.pop("machine",None)
             if machine[3]!=request.form.get('machinepass'):
-                return "WARNING! the machine is compromised"
+                session["message"]="WARNING! the machine is compromised"
             else:
-                return "Unauthorized Device"
+                session["message"]="Unauthorized Device"
         else:
-            return "Wrong Password"
-    return "PAKYO"
+            session["message"]="Wrong Password"
+    else:
+        session["message"]="User does not exist"
+    return redirect(url_for('login'))
 
 @app.route('/home')
 def home():
@@ -308,12 +318,14 @@ def createaccountpass():
     #print(request.form.get("password"))
     #print(request.form.get("email"))
     if Database_Manager.SEARCH("user",request.form.get("username"),1):
-        return "username exists"
+        session["message"]="username exists"
     elif Database_Manager.SEARCH("user",request.form.get("email"),5):
-        return "email exists"
-    #Database_Manager.CREATE("user", (None,request.form.get("username"),request.form.get("password"),0,"Client",request.form.get("email")))
-    MIL.MIL(request.form.get("email"),"Verify Your account at Banko Ni Andre",render_template("webmail.html",webmail=2,fields=[request.form.get("username"),request.form.get("password"),request.form.get("email")]))
-    return "Check your email"
+        session["message"]="email exists"
+    else:
+        #Database_Manager.CREATE("user", (None,request.form.get("username"),request.form.get("password"),0,"Client",request.form.get("email")))
+        MIL.MIL(request.form.get("email"),"Verify Your account at Banko Ni Andre",render_template("webmail.html",webmail=2,fields=[request.form.get("username"),request.form.get("password"),request.form.get("email")]))
+        session["message"]="Check your email"
+    return redirect(url_for('login'))
 
 @app.route('/lokads',methods=["POST"])
 def lokads():
@@ -334,6 +346,31 @@ def createfinal():
             session["message"]="Email Verified"
         return redirect(url_for('login'))
 
+@app.route('/forgetpassword')
+def forgetpassword():
+    return render_template('forgotpass.html')
+
+@app.route('/requestforgetpassword',methods=["POST"])
+def requestforgetpassword():
+    if Database_Manager.SEARCH("user",request.form.get("imil"),5):
+        MIL.MIL(Database_Manager.SEARCH("user",request.form.get("imil"),5)[0][5], "Change Your Password", render_template('webmail.html',webmail=2,fields=[Database_Manager.SEARCH("user",request.form.get("imil"),5)[0][0]]))
+        session["message"]="Password reset sent to email"
+    else:
+        session["message"]="Email does not exist"
+    return redirect(url_for('login'))
+
+@app.route('/forgotprefinal',methods=["POST"])
+def forgotprefinal():
+    return render_template('forgotpassfinal.html',aydi=request.form.get("aydi")) 
+
+@app.route('/forgotfinal',methods=["POST"])
+def forgotfinal():
+    usersearch=Database_Manager.SEARCH("user",request.form.get("aydi"))[0]
+    Database_Manager.UPDATE("user",(usersearch[0],usersearch[1],request.form.get("password"),usersearch[3],usersearch[4],usersearch[5]))
+    session["message"]="Password reset"
+    return redirect(url_for('login'))
+    
+        
 if __name__ == "__main__":
     app.run(host='localhost',debug=True)
     #app.run()

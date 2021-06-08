@@ -1,0 +1,22 @@
+<script>
+    function passcheck(){
+        if (document.getElementById("password").value==document.getElementById("password2").value){
+            document.getElementById("sabmit").click();
+        }
+        else{
+            document.getElementById("misij").style.display="block";
+        }
+    }
+</script>
+<body style="background-color:pink;">
+<form action="{{request.url_root}}forgotfinal" method="post" id="createform">
+    <div style="display:none" id="misij">PASSWORD MISMATCH!</div>
+    <label>password:</label>
+    <input type="text" name="password" id="password"required><br>
+    <label>confirm password:</label>
+    <input type="text" name="password2" id="password2"required>
+    <input type="hidden" name="aydi" value="{{aydi}}">
+    <input type="submit" id="sabmit" style="display:none">
+</form>
+<button onclick="passcheck()">Submit</button>
+</body>

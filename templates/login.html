@@ -18,9 +18,10 @@
 <input type="text" name="password"><br>
 <input type="hidden" id="machineid" name="machineid">
 <input type="hidden" id="machinepass" name="machinepass">
+{% if message %}{{message}}<br>{% endif %}
 <input type="submit" value="Log in">
 </form>
 <a href="{{url_for('createaccount')}}"><button>Create account</button></a>
-<a href="{{url_for('createaccount')}}"><button>Forgot Password</button></a>
+<a href="{{url_for('forgetpassword')}}"><button>Forgot Password</button></a>
 </body>
 </html>
