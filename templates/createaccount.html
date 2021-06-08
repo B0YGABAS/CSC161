@@ -1,0 +1,28 @@
+<script>
+    function passcheck(){
+        if (document.getElementById("password").value==document.getElementById("password2").value){
+            document.getElementById("sabmit").click();
+        }
+        else{
+            document.getElementById("misij").style.display="block";
+        }
+    }
+</script>
+<body style="background-color:pink;{% if webmail>=1 %}padding:0;margin:0;{% endif %}">
+{% if webmail>=1 %}<div style="background-color: rgba(128, 128, 128, 0.603);width:100%;height:25%;font-size: 20vh;">{% if webmail==1 %}Your One time pin is{% else %}Email Verification{%endif%}</div></div><span style="display: block">{% endif %}
+<form action="{{request.url_root}}createaccountpass" method="post" id="createform">
+    <div style="display:none" id="misij">PASSWORD MISMATCH!</div>
+    <label>username:</label>
+    <input type="text" name="username" {% if webmail>=1 %}value="{{fields[0]}}"{% endif %} required><br>
+    <label>password:</label>
+    <input type="text" name="password" id="password" {% if webmail>=1 %}value="{{fields[1]}}"{% endif %} required><br>
+    <label>confirm password:</label>
+    <input type="text" name="password2" id="password2" {% if webmail>=1 %}value="{{fields[1]}}"{% endif %} required><br>
+    <label>email:</label>
+    <input type="email" name="email"  {% if webmail>=1 %}value="{{fields[2]}}"{% endif %}required><br>
+    {% if webmail>=1 %}<input type="text" name="finaler" value="final"><br>{% endif %}
+    <input type="submit" id="sabmit" style="display:none">
+</form>
+<button onclick="passcheck()">Submit</button>
+{% if webmail>=1 %}</span><div style="text-align:center;background-color: pink;">{% if webmail==1 %}<p style="background-color:white;font-size: 15vh;text-align:center;margin-top: 10%;display:inline-block;">{{GEN}}</p>{% else %}<button style="background-color:yellow;font-size: 15vh;text-align:center;margin-top: 10%;display:inline-block;" onclick="passcheck()">Confirm Account</button>{%endif%}</div>{% endif %}
+</body>

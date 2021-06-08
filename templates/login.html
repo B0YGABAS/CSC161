@@ -10,7 +10,7 @@
         }
     </script>
 </head>
-<body onload="lod()">
+<body style="background-color:pink" onload="lod()">
 <form action="loginpass" method="post">
 <label>username:</label>
 <input type="text" name="username"><br>
@@ -20,5 +20,7 @@
 <input type="hidden" id="machinepass" name="machinepass">
 <input type="submit" value="Log in">
 </form>
+<a href="{{url_for('createaccount')}}"><button>Create account</button></a>
+<a href="{{url_for('createaccount')}}"><button>Forgot Password</button></a>
 </body>
 </html>

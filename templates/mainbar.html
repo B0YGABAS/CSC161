@@ -6,14 +6,16 @@
 </script>
 <div style="background-color: rgba(128, 128, 128, 0.603);padding-left: 15px;padding-top: 15px;padding-bottom: 15px;padding-right: 15px;">
 <form action="{{url_for('logout')}}" method="post">
-<span style="float: left;">Signed in as: {{user[0][1]}} {%if PHD!=1 %}{{PHD}}{% endif %}</span><input type="submit" value="Log out" style="float: right;padding-bottom:0 ;">
+<span style="float: left;">Signed in as: {{user[0][1]}} {%if PHD!=1 %}{% endif %}</span><input type="submit" value="Log out" style="float: right;padding-bottom:0 ;">
 </form>
-<br>ID#: {{user[0][0]}}<br>Your current balance is: Php {{user[0][3]}}<span style="float: right;position: relative;"><a href="{{url_for('home')}}"><button>{%if Clearance[2]==0%}Deposit/Withdraw{%else%}Main menu{%endif%}</button></a></span><p></p>
-<p style="text-align: center;">{%if Clearance[3]==1%}<a href="{{url_for('transactions',a='user')}}"><button>Manage Clearance</button></p></a>{%else%}<a href="{{url_for('transfer')}}"><button>Transfer funds</button></p></a>{%endif%}
+<br>ID#: {{user[0][0]}}<br>Your current balance is: Php {{user[0][3]}}<span style="float: right;position: relative;"><a href="{{url_for('home')}}"><button>{%if Clearance[4]==1%}Deposit/Withdraw{%elif Clearance[6]==1%}Manage Devices{%else%}Main menu{%endif%}</button></a></span><p></p>
+<p style="text-align: center;">{%if Clearance[3]==1%}<a href="{{url_for('transactions',a='user')}}"><button>Manage Clearance</button></p></a>{%elif Clearance[7]%}<form action="{{url_for('searchlock',addelete='add')}}" method="post"><p style="text-align: center;"><input type="text" name="searchlock"><input type="submit" value="Search"></p></form>{%elif Clearance[8]==1%}<a href="{{url_for('transfer')}}"><button>Transfer funds</button></p></a>{%endif%}
 <p style="text-align: center;"><a href="{{url_for('transactions',a='logs')}}"><button>Logs</button></a><a href="{{url_for('transactions',a='transfers')}}"><button>Transfers</button></a><a href="{{url_for('transactions',a='deposits_or_withdrawals')}}"><button>Deposits or Withdrawals</button></a></p>
 </div>
-<div style="background-color: black;color: white;">{{message}}</div>
+<div style="background-color: black;color: white;">{{message}} {%if Clearance[-1]=="SEARCHLOCK ACTIVATED!"%} <form action="{{url_for('searchlock',addelete='delete')}}" method="post"><input type="submit" value="Click Here To stop"></form>{%endif%}</div>
 {% if PHD!=1 %}<body onload="PHD_UPDATE_PASSWORD('{{PHD}}')"></body>{% endif %}
+<body style="background-color:pink">
 {% block body %}
 {% endblock %}
+</body>
 </html>
